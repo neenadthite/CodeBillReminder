@@ -1,165 +1,111 @@
 #include <stdio.h>
 
-#include "database.h"
 #include "bill.h"
-#include "bill_manager.h"
-#include "bill_ui.h"
+#include "reminder.h"
+
 
 int main(void)
 {
-    Database database = { 0 };
-    BillManager manager;
+    Bill bill;
 
-    printf("Opening database...\n");
+    bill_init(&bill);
 
-    if (!database_open(
-        &database,
-        "database/bills.db"))
-    {
-        printf("Database open failed.\n");
-        return 1;
-    }
+    bill_set_account_name(
+        &bill,
+        "Netflix"
+    );
 
-    printf("Database opened successfully.\n");
-
-    if (!database_initialize(&database))
-    {
-        printf("Database initialization failed.\n");
-
-        database_close(&database);
-        return 1;
-    }
-
-    printf("Database initialized successfully.\n");
-
-    if (!bill_manager_init(&manager))
-    {
-        printf("BillManager initialization failed.\n");
-
-        database_close(&database);
-        return 1;
-    }
-
-    printf("BillManager initialized successfully.\n");
-
-    /*
-     * Load database into RAM
-     */
-    printf("\nLoading bills from database...\n");
-
-    if (!bill_manager_load_from_database(
-        &manager,
-        &database))
-    {
-        printf("Failed to load bills.\n");
-
-        bill_manager_free(&manager);
-        database_close(&database);
-
-        return 1;
-    }
-
-    printf("Bills loaded successfully.\n");
-    printf("BillManager count: %zu\n",
-        bill_manager_count(&manager));
-
-    /*
-     * Get bill ID 3
-     */
-    Bill* bill =
-        bill_manager_get(
-            &manager,
-            3
-        );
-
-    if (bill == NULL)
-    {
-        printf("Bill ID 3 not found.\n");
-
-        bill_manager_free(&manager);
-        database_close(&database);
-
-        return 1;
-    }
-
-    printf("\nBefore UPDATE:\n");
-    bill_ui_print(bill);
-
-    /*
-     * Modify RAM copy
-     */
     bill_set_provider(
-        bill,
-        "Netflix Premium"
+        &bill,
+        "Netflix India"
+    );
+
+    bill_set_account_number(
+        &bill,
+        "NET123456"
     );
 
     bill_set_amount_paise(
-        bill,
+        &bill,
         99999
     );
 
-    bill_set_reminder_days(
-        bill,
-        7
+    /*
+     * Today:
+     * 2026-09-10
+     *
+     * Due:
+     * 2026-09-15
+     *
+     * Reminder:
+     * 5 days before due date
+     *
+     * Reminder date:
+     * 2026-09-10
+     */
+    bill_set_due_date(
+        &bill,
+        date_create(2026, 9, 15)
     );
 
-    printf("\nUpdating Bill ID %d...\n",
-        bill->id);
+    bill_set_reminder_days(
+        &bill,
+        5
+    );
 
-    if (!bill_manager_update_in_database(
-        &manager,
-        &database,
-        bill))
-    {
-        printf("Bill update failed.\n");
+    bill_set_email_enabled(
+        &bill,
+        true
+    );
 
-        bill_manager_free(&manager);
-        database_close(&database);
+    bill_set_sms_enabled(
+        &bill,
+        true
+    );
 
-        return 1;
-    }
+    bill_set_status(
+        &bill,
+        BILL_STATUS_PENDING
+    );
 
-    printf("Bill updated successfully.\n");
 
-    /*
-     * Display RAM copy
-     */
-    printf("\nAfter UPDATE:\n");
+    printf("Reminder date test\n");
+    printf("------------------\n");
 
-    bill_ui_print(bill);
+    Date reminder_date =
+        bill_get_reminder_date(&bill);
 
-    /*
-     * Delete
-     */
-    printf("\nDeleting Bill ID %d...\n",
-        bill->id);
+    char date_string[11];
 
-    if (!bill_manager_remove_from_database(
-        &manager,
-        &database,
-        bill->id))
-    {
-        printf("Bill deletion failed.\n");
+    date_to_string(
+        reminder_date,
+        date_string,
+        sizeof(date_string)
+    );
 
-        bill_manager_free(&manager);
-        database_close(&database);
+    printf("Reminder date : %s\n",
+        date_string);
 
-        return 1;
-    }
+    printf(
+        "Reminder due  : %s\n",
+        reminder_is_due(&bill)
+        ? "YES"
+        : "NO"
+    );
 
-    printf("Bill deleted successfully.\n");
+    printf(
+        "Overdue       : %s\n",
+        reminder_is_overdue(&bill)
+        ? "YES"
+        : "NO"
+    );
 
-    printf("BillManager count: %zu\n",
-        bill_manager_count(&manager));
-
-    /*
-     * Cleanup
-     */
-    bill_manager_free(&manager);
-
-    database_close(&database);
-
-    printf("\nDatabase and BillManager closed.\n");
+    printf(
+        "Notification   : %s\n",
+        reminder_has_notification_channel(&bill)
+        ? "YES"
+        : "NO"
+    );
 
     return 0;
 }
