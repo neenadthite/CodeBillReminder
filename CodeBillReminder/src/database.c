@@ -648,3 +648,78 @@ bind_error:
 
     return false;
 }
+
+bool database_delete_bill(Database* database, int id)
+{
+    if (database == NULL ||
+        database->handle == NULL ||
+        id <= 0)
+    {
+        return false;
+    }
+
+    sqlite3* db = (sqlite3*)database->handle;
+
+    const char* sql =
+        "DELETE FROM bills "
+        "WHERE id = ?;";
+
+    sqlite3_stmt* statement = NULL;
+
+    int result = sqlite3_prepare_v2(
+        db,
+        sql,
+        -1,
+        &statement,
+        NULL
+    );
+
+    if (result != SQLITE_OK)
+    {
+        printf("Failed to prepare DELETE statement: %s\n",
+            sqlite3_errmsg(db));
+
+        return false;
+    }
+
+    result = sqlite3_bind_int(
+        statement,
+        1,
+        id
+    );
+
+    if (result != SQLITE_OK)
+    {
+        printf("Failed to bind DELETE ID: %s\n",
+            sqlite3_errmsg(db));
+
+        sqlite3_finalize(statement);
+
+        return false;
+    }
+
+    result = sqlite3_step(statement);
+
+    if (result != SQLITE_DONE)
+    {
+        printf("Failed to delete bill: %s\n",
+            sqlite3_errmsg(db));
+
+        sqlite3_finalize(statement);
+
+        return false;
+    }
+
+    if (sqlite3_changes(db) == 0)
+    {
+        printf("No bill found with ID %d.\n", id);
+
+        sqlite3_finalize(statement);
+
+        return false;
+    }
+
+    sqlite3_finalize(statement);
+
+    return true;
+}

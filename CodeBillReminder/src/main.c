@@ -31,13 +31,16 @@ int main(void)
     printf("Database initialized successfully.\n");
 
     /*
-     * Retrieve existing bill
+     * Retrieve bill ID 3
      */
     Bill bill;
 
     printf("\nRetrieving bill ID 3...\n");
 
-    if (!database_get_bill(&database, 3, &bill))
+    if (!database_get_bill(
+        &database,
+        3,
+        &bill))
     {
         printf("Failed to retrieve bill.\n");
 
@@ -47,74 +50,45 @@ int main(void)
 
     printf("Bill retrieved successfully.\n");
 
-    printf("\nBefore UPDATE:\n");
-
     bill_ui_print(&bill);
 
     /*
-     * Modify bill
+     * Delete bill
      */
-    printf("\nModifying bill...\n");
-
-    bill_set_provider(
-        &bill,
-        "Netflix India"
-    );
-
-    bill_set_amount_paise(
-        &bill,
-        79999
-    );
-
-    bill_set_reminder_days(
-        &bill,
-        5
-    );
-
-    bill_set_email_enabled(
-        &bill,
-        false
-    );
-
-    bill_set_sms_enabled(
-        &bill,
-        true
-    );
-
-    printf("\nUpdating bill ID %d...\n",
+    printf("\nDeleting bill ID %d...\n",
         bill.id);
 
-    if (database_update_bill(&database, &bill))
+    if (database_delete_bill(
+        &database,
+        bill.id))
     {
-        printf("Bill updated successfully.\n");
+        printf("Bill deleted successfully.\n");
     }
     else
     {
-        printf("Bill update failed.\n");
+        printf("Bill deletion failed.\n");
 
         database_close(&database);
         return 1;
     }
 
     /*
-     * Read it back from SQLite
+     * Verify deletion
      */
-    Bill updated_bill;
+    Bill deleted_bill;
 
-    printf("\nRetrieving updated bill...\n");
+    printf("\nVerifying deletion...\n");
 
-    if (database_get_bill(
+    if (!database_get_bill(
         &database,
-        bill.id,
-        &updated_bill))
+        3,
+        &deleted_bill))
     {
-        printf("Updated bill retrieved successfully.\n");
-
-        bill_ui_print(&updated_bill);
+        printf("Bill ID 3 no longer exists.\n");
     }
     else
     {
-        printf("Failed to retrieve updated bill.\n");
+        printf("ERROR: Bill ID 3 still exists!\n");
     }
 
     database_close(&database);
