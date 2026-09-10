@@ -11,6 +11,8 @@ set(CMAKE_C_EXTENSIONS OFF)
 
 add_executable(bill_reminder
     src/main.c
+    src/date.c
+    src/bill.c
 )
 
 target_include_directories(bill_reminder

@@ -1,8 +1,11 @@
 #include <stdio.h>
 
-#include "date.h"
+#include "bill.h"
 
-static void print_date(const char *label, Date date)
+
+static void print_date(
+    const char* label,
+    Date date)
 {
     char buffer[16];
 
@@ -12,31 +15,109 @@ static void print_date(const char *label, Date date)
         sizeof(buffer)
     );
 
-    printf("%s%s\n", label, buffer);
+    printf(
+        "%s%s\n",
+        label,
+        buffer
+    );
 }
 
 
 int main(void)
 {
-    Date today = date_create(2026, 9, 3);
+    Bill bill;
 
-    Date due_date = date_create(2026, 9, 15);
+    bill_init(&bill);
 
-    Date reminder_date =
-        date_add_days(due_date, -5);
+    bill_set_account_name(
+        &bill,
+        "Electricity"
+    );
 
-    print_date("Today          : ", today);
+    bill_set_provider(
+        &bill,
+        "MSEDCL"
+    );
 
-    print_date("Due Date       : ", due_date);
+    bill_set_account_number(
+        &bill,
+        "123456789"
+    );
 
-    print_date(
-        "Reminder Date  : ",
-        reminder_date
+    bill_set_amount(
+        &bill,
+        2450.50
+    );
+
+    bill_set_due_date(
+        &bill,
+        date_create(2026, 9, 15)
+    );
+
+    bill_set_reminder_days(
+        &bill,
+        5
+    );
+
+    bill_set_email_enabled(
+        &bill,
+        true
+    );
+
+    bill_set_sms_enabled(
+        &bill,
+        false
+    );
+
+
+    printf(
+        "Account        : %s\n",
+        bill.account_name
     );
 
     printf(
-        "Days remaining : %d\n",
-        date_days_until(today, due_date)
+        "Provider       : %s\n",
+        bill.provider
+    );
+
+    printf(
+        "Account Number : %s\n",
+        bill.account_number
+    );
+
+    printf(
+        "Amount         : %.2f\n",
+        bill.amount
+    );
+
+    print_date(
+        "Due Date       : ",
+        bill.due_date
+    );
+
+    print_date(
+        "Reminder Date  : ",
+        bill_get_reminder_date(&bill)
+    );
+
+    printf(
+        "Reminder Days  : %d\n",
+        bill.reminder_days
+    );
+
+    printf(
+        "Email          : %s\n",
+        bill.email_enabled ? "Enabled" : "Disabled"
+    );
+
+    printf(
+        "SMS            : %s\n",
+        bill.sms_enabled ? "Enabled" : "Disabled"
+    );
+
+    printf(
+        "Valid          : %s\n",
+        bill_is_valid(&bill) ? "YES" : "NO"
     );
 
     return 0;
