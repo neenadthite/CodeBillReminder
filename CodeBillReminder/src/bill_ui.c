@@ -303,63 +303,42 @@ void bill_ui_print(const Bill* bill)
         return;
     }
 
-    char due_date[16];
-    char reminder_date[16];
+    char due_date_string[11];
+    char reminder_date_string[11];
 
     date_to_string(
         bill->due_date,
-        due_date,
-        sizeof(due_date));
+        due_date_string,
+        sizeof(due_date_string)
+    );
 
-    Date reminder =
-        bill_get_reminder_date(bill);
+    Date reminder_date = bill_get_reminder_date(bill);
 
     date_to_string(
-        reminder,
         reminder_date,
-        sizeof(reminder_date));
+        reminder_date_string,
+        sizeof(reminder_date_string)
+    );
 
-    printf("\n");
-    printf("========== Bill ==========\n");
+    printf("\n========== Bill ==========\n");
 
-    printf(
-        "Account        : %s\n",
-        bill->account_name);
+    printf("Account        : %s\n", bill->account_name);
+    printf("Provider       : %s\n", bill->provider);
+    printf("Account Number : %s\n", bill->account_number);
 
-    printf(
-        "Provider       : %s\n",
-        bill->provider);
-
-    printf(
-        "Account Number : %s\n",
-        bill->account_number);
-
-    printf("Amount       : %lld.%02lld\n",
+    printf("Amount         : %lld.%02lld\n",
         (long long)(bill->amount_paise / 100),
         (long long)(bill->amount_paise % 100));
 
-    printf(
-        "Due Date       : %s\n",
-        due_date);
+    printf("Due Date       : %s\n", due_date_string);
+    printf("Reminder Date  : %s\n", reminder_date_string);
+    printf("Reminder Days  : %d\n", bill->reminder_days);
 
-    printf(
-        "Reminder Date  : %s\n",
-        reminder_date);
+    printf("Email          : %s\n",
+        bill->email_enabled ? "Enabled" : "Disabled");
 
-    printf(
-        "Reminder Days  : %d\n",
-        bill->reminder_days);
+    printf("SMS            : %s\n",
+        bill->sms_enabled ? "Enabled" : "Disabled");
 
-    printf(
-        "Email          : %s\n",
-        bill->email_enabled ?
-        "Enabled" : "Disabled");
-
-    printf(
-        "SMS            : %s\n",
-        bill->sms_enabled ?
-        "Enabled" : "Disabled");
-
-    printf(
-        "==========================\n");
+    printf("==========================\n");
 }

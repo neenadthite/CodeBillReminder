@@ -16,7 +16,7 @@ void bill_init(Bill* bill)
 
     bill->email_enabled = false;
     bill->sms_enabled = false;
-
+    bill->amount_paise = 0;
     bill->status = BILL_STATUS_PENDING;
 }
 
@@ -106,12 +106,7 @@ bool bill_set_amount_paise(
     Bill* bill,
     int64_t amount_paise)
 {
-    if (bill == NULL)
-    {
-        return false;
-    }
-
-    if (amount_paise < 0.0)
+    if (bill == NULL || amount_paise < 0)
     {
         return false;
     }
@@ -224,7 +219,7 @@ bool bill_is_valid(
         return false;
     }
 
-    if (bill->amount_paise < 0.0)
+    if (bill->amount_paise < 0)
     {
         return false;
     }

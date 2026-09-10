@@ -69,7 +69,7 @@ bool bill_set_account_number(
 
 bool bill_set_amount_paise(
     Bill* bill,
-    double amount
+    int64_t amount_paise
 );
 
 bool bill_set_due_date(
