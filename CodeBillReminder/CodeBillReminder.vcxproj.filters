@@ -24,12 +24,18 @@
     <ClCompile Include="src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\bill_ui.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\bill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\date.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\bill_ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
