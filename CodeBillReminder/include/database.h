@@ -9,7 +9,6 @@
 typedef struct
 {
     void* handle;
-
 } Database;
 
 
@@ -72,6 +71,17 @@ bool database_get_bill(
     Database* database,
     int id,
     Bill* bill
+);
+
+typedef bool (*DatabaseBillCallback)(
+    const Bill* bill,
+    void* context
+    );
+
+bool database_get_all_bills(
+    Database* database,
+    DatabaseBillCallback callback,
+    void* context
 );
 
 #endif

@@ -256,3 +256,33 @@ bool bill_manager_add_to_database(
 
     return true;
 }
+
+static bool load_bill_callback(
+    const Bill* bill,
+    void* context)
+{
+    BillManager* manager =
+        (BillManager*)context;
+
+    return bill_manager_add(
+        manager,
+        bill
+    );
+}
+
+bool bill_manager_load_from_database(
+    BillManager* manager,
+    Database* database)
+{
+    if (manager == NULL ||
+        database == NULL)
+    {
+        return false;
+    }
+
+    return database_get_all_bills(
+        database,
+        load_bill_callback,
+        manager
+    );
+}

@@ -80,4 +80,9 @@ bool bill_manager_add_to_database(
     Bill* bill
 );
 
+bool bill_manager_load_from_database(
+    BillManager* manager,
+    Database* database
+);
+
 #endif
