@@ -85,4 +85,16 @@ bool bill_manager_load_from_database(
     Database* database
 );
 
+bool bill_manager_update_in_database(
+    BillManager* manager,
+    Database* database,
+    const Bill* bill
+);
+
+bool bill_manager_remove_from_database(
+    BillManager* manager,
+    Database* database,
+    int id
+);
+
 #endif

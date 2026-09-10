@@ -286,3 +286,89 @@ bool bill_manager_load_from_database(
         manager
     );
 }
+
+bool bill_manager_update_in_database(
+    BillManager* manager,
+    Database* database,
+    const Bill* bill)
+{
+    if (manager == NULL ||
+        database == NULL ||
+        bill == NULL)
+    {
+        return false;
+    }
+
+    if (!bill_is_valid(bill))
+    {
+        return false;
+    }
+
+    /*
+     * First update SQLite.
+     */
+    if (!database_update_bill(database, bill))
+    {
+        return false;
+    }
+
+    /*
+     * Find the corresponding Bill in RAM.
+     */
+    Bill* stored_bill =
+        bill_manager_get(manager, bill->id);
+
+    if (stored_bill == NULL)
+    {
+        /*
+         * Database was updated but RAM does not
+         * contain the bill.
+         *
+         * This situation will be handled more
+         * robustly later using transactions.
+         */
+        return false;
+    }
+
+    /*
+     * Update RAM copy.
+     */
+    *stored_bill = *bill;
+
+    return true;
+}
+
+bool bill_manager_remove_from_database(
+    BillManager* manager,
+    Database* database,
+    int id)
+{
+    if (manager == NULL ||
+        database == NULL ||
+        id <= 0)
+    {
+        return false;
+    }
+
+    /*
+     * First delete from SQLite.
+     */
+    if (!database_delete_bill(
+        database,
+        id))
+    {
+        return false;
+    }
+
+    /*
+     * Then remove from RAM.
+     */
+    if (!bill_manager_remove(
+        manager,
+        id))
+    {
+        return false;
+    }
+
+    return true;
+}
