@@ -2,7 +2,7 @@
 #define BILL_H
 
 #include <stdbool.h>
-
+#include <stdint.h>
 #include "date.h"
 
 
@@ -29,7 +29,7 @@ typedef struct
     char provider[64];
     char account_number[64];
 
-    double amount;
+    int64_t amount_paise;
 
     Date due_date;
 
@@ -67,7 +67,7 @@ bool bill_set_account_number(
     const char* account_number
 );
 
-bool bill_set_amount(
+bool bill_set_amount_paise(
     Bill* bill,
     double amount
 );

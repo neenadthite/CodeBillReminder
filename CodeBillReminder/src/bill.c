@@ -102,21 +102,21 @@ bool bill_set_account_number(
 }
 
 
-bool bill_set_amount(
+bool bill_set_amount_paise(
     Bill* bill,
-    double amount)
+    int64_t amount_paise)
 {
     if (bill == NULL)
     {
         return false;
     }
 
-    if (amount < 0.0)
+    if (amount_paise < 0.0)
     {
         return false;
     }
 
-    bill->amount = amount;
+    bill->amount_paise = amount_paise;
 
     return true;
 }
@@ -224,7 +224,7 @@ bool bill_is_valid(
         return false;
     }
 
-    if (bill->amount < 0.0)
+    if (bill->amount_paise < 0.0)
     {
         return false;
     }

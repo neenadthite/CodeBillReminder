@@ -75,7 +75,7 @@ bool database_initialize(
         "account_name TEXT NOT NULL,"
         "provider TEXT NOT NULL,"
         "account_number TEXT NOT NULL,"
-        "amount REAL NOT NULL,"
+        "amount_paise INTEGER NOT NULL,"
         "due_date TEXT NOT NULL,"
         "reminder_days INTEGER NOT NULL,"
         "email_enabled INTEGER NOT NULL,"

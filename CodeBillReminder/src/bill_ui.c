@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 static bool read_string(
     const char *prompt,
@@ -139,8 +140,6 @@ bool bill_ui_create(Bill *bill)
 
     int reminder_days;
 
-    double amount;
-
     bool email_enabled;
     bool sms_enabled;
     printf("\n");
@@ -170,18 +169,23 @@ bool bill_ui_create(Bill *bill)
         return false;
     }
 
-    if (!read_double(
-        "Amount         : ",
-        &amount))
+    double amount;
+
+    if (!read_double("Amount         : ", &amount))
     {
         return false;
     }
 
-    if (!bill_set_amount(
-        bill,
-        amount))
+    if (amount < 0.0)
     {
-        printf("Invalid amount.\n");
+        printf("Amount cannot be negative.\n");
+        return false;
+    }
+
+    int64_t amount_paise = (int64_t)(amount * 100.0 + 0.5);
+
+    if (!bill_set_amount_paise(bill, amount_paise))
+    {
         return false;
     }
 
@@ -330,9 +334,9 @@ void bill_ui_print(const Bill* bill)
         "Account Number : %s\n",
         bill->account_number);
 
-    printf(
-        "Amount         : %.2f\n",
-        bill->amount);
+    printf("Amount       : %lld.%02lld\n",
+        (long long)(bill->amount_paise / 100),
+        (long long)(bill->amount_paise % 100));
 
     printf(
         "Due Date       : %s\n",
