@@ -1,10 +1,13 @@
+#include "bill_manager.h"
+
+#include "bill_ui.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "bill_manager.h"
-#include "bill_ui.h"
 
 #define INITIAL_CAPACITY 4
+
 
 bool bill_manager_init(
     BillManager* manager)
@@ -25,9 +28,11 @@ bool bill_manager_init(
 
     manager->count = 0;
     manager->capacity = INITIAL_CAPACITY;
+    manager->next_id = 1;
 
     return true;
 }
+
 
 void bill_manager_free(
     BillManager* manager)
@@ -42,7 +47,9 @@ void bill_manager_free(
     manager->bills = NULL;
     manager->count = 0;
     manager->capacity = 0;
+    manager->next_id = 0;
 }
+
 
 static bool bill_manager_grow(
     BillManager* manager)
@@ -65,6 +72,7 @@ static bool bill_manager_grow(
 
     return true;
 }
+
 
 bool bill_manager_add(
     BillManager* manager,
@@ -94,13 +102,15 @@ bool bill_manager_add(
     new_bill.id =
         manager->next_id++;
 
-    manager->bills[manager->count] =
-        new_bill;
+    manager->bills[
+        manager->count
+    ] = new_bill;
 
     manager->count++;
 
     return true;
 }
+
 
 Bill* bill_manager_get(
     BillManager* manager,
@@ -123,6 +133,7 @@ Bill* bill_manager_get(
 
     return NULL;
 }
+
 
 bool bill_manager_remove(
     BillManager* manager,
@@ -156,6 +167,7 @@ bool bill_manager_remove(
     return false;
 }
 
+
 size_t bill_manager_count(
     const BillManager* manager)
 {
@@ -166,6 +178,7 @@ size_t bill_manager_count(
 
     return manager->count;
 }
+
 
 void bill_manager_print_all(
     const BillManager* manager)

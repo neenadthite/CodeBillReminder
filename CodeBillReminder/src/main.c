@@ -5,8 +5,8 @@
 
 
 static Bill create_test_bill(
-    const char* account,
-    const char* provider,
+    const char *account,
+    const char *provider,
     double amount,
     Date due_date)
 {
@@ -125,6 +125,18 @@ int main(void)
         bill_manager_count(&manager)
     );
 
+    printf("\nRemoving bill ID 2...\n");
+
+    if (bill_manager_remove(&manager, 2))
+    {
+        printf("Bill removed successfully.\n");
+    }
+    else
+    {
+        printf("Bill not found.\n");
+    }
+
+    bill_manager_print_all(&manager);
 
     bill_manager_free(
         &manager
