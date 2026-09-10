@@ -17,6 +17,7 @@ add_executable(bill_reminder
     src/bill_manager.c
     src/database.c
     src/reminder.c
+    src/notification.c
     external/sqlite/sqlite3.c
 )
 

@@ -147,6 +147,7 @@
     <ClCompile Include="src\database.c" />
     <ClCompile Include="src\date.c" />
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\notification.c" />
     <ClCompile Include="src\reminder.c" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="include\bill_ui.h" />
     <ClInclude Include="include\database.h" />
     <ClInclude Include="include\date.h" />
+    <ClInclude Include="include\notification.h" />
     <ClInclude Include="include\reminder.h" />
   </ItemGroup>
   <ItemGroup>

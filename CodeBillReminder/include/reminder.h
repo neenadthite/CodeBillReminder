@@ -39,4 +39,8 @@ size_t reminder_process_bills(
     void* context
 );
 
+static bool reminder_notification_callback(
+    const Bill* bill,
+    void* context);
+
 #endif

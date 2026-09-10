@@ -6,6 +6,8 @@
 #include "reminder.h"
 #include "bill.h"
 #include "date.h"
+#include "notification.h"
+
 
 static bool reminder_callback(
     const Bill* bill,
@@ -262,15 +264,20 @@ int main(void)
 
     printf("\nProcessing reminders...\n");
 
-    size_t reminder_count =
+    EmailConfig email_config =
+    {
+        .recipient = "neenadthite@gmail.com"
+    };
+
+    size_t email_count =
         reminder_process_bills(
             bill_manager_data(&manager),
             bill_manager_count(&manager),
-            reminder_callback,
-            NULL);
+            reminder_notification_callback,
+            &email_config);
 
-    printf("\nTotal reminders required: %zu\n",
-        reminder_count);
+    printf("\nEmails sent: %zu\n",
+        email_count);
 
 
     /*
@@ -286,4 +293,21 @@ int main(void)
     printf("\nDatabase closed.\n");
 
     return 0;
+}
+
+static bool reminder_notification_callback(
+    const Bill* bill,
+    void* context)
+{
+    EmailConfig* email_config =
+        (EmailConfig*)context;
+
+    if (!bill->email_enabled)
+    {
+        return false;
+    }
+
+    return notification_send_email(
+        bill,
+        email_config);
 }
