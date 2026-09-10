@@ -14,6 +14,7 @@ add_executable(bill_reminder
     src/date.c
     src/bill.c
     src/bill_ui.c
+    src/bill_manager.c
 )
 
 target_include_directories(bill_reminder
