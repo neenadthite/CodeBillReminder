@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
-
+#include "database.h"
 #include "bill.h"
 
 
@@ -72,6 +72,12 @@ size_t bill_manager_count(
  */
 void bill_manager_print_all(
     const BillManager* manager
+);
+
+bool bill_manager_add_to_database(
+    BillManager* manager,
+    Database* database,
+    Bill* bill
 );
 
 #endif

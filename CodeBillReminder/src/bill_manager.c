@@ -202,3 +202,57 @@ void bill_manager_print_all(
         );
     }
 }
+
+bool bill_manager_add_to_database(
+    BillManager* manager,
+    Database* database,
+    Bill* bill)
+{
+    if (manager == NULL ||
+        database == NULL ||
+        bill == NULL)
+    {
+        return false;
+    }
+
+    if (!bill_is_valid(bill))
+    {
+        return false;
+    }
+
+    /*
+     * Store the bill in SQLite first.
+     *
+     * SQLite generates the persistent ID.
+     */
+    if (!database_insert_bill(database, bill))
+    {
+        return false;
+    }
+
+    /*
+     * database_insert_bill() has now
+     * populated bill->id.
+     *
+     * Add the same bill to RAM.
+     */
+    if (!bill_manager_add(manager, bill))
+    {
+        /*
+         * Important:
+         *
+         * The database insert succeeded,
+         * but RAM insertion failed.
+         *
+         * Roll back the database row.
+         */
+        database_delete_bill(
+            database,
+            bill->id
+        );
+
+        return false;
+    }
+
+    return true;
+}
