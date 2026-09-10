@@ -30,6 +30,12 @@
     <ClCompile Include="src\bill_manager.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="external\sqlite\sqlite3.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\database.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\bill.h">
@@ -42,6 +48,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\bill_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\sqlite\sqlite3.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\database.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

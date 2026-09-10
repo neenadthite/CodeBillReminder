@@ -15,9 +15,11 @@ add_executable(bill_reminder
     src/bill.c
     src/bill_ui.c
     src/bill_manager.c
+    external/sqlite/sqlite3.c
 )
 
 target_include_directories(bill_reminder
     PRIVATE
         ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/external/sqlite
 )
