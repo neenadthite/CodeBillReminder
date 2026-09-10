@@ -13,8 +13,6 @@ typedef struct
 
     size_t count;
     size_t capacity;
-    int next_id;
-
 } BillManager;
 
 

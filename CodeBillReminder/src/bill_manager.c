@@ -28,7 +28,6 @@ bool bill_manager_init(
 
     manager->count = 0;
     manager->capacity = INITIAL_CAPACITY;
-    manager->next_id = 1;
 
     return true;
 }
@@ -47,7 +46,6 @@ void bill_manager_free(
     manager->bills = NULL;
     manager->count = 0;
     manager->capacity = 0;
-    manager->next_id = 0;
 }
 
 
@@ -98,9 +96,6 @@ bool bill_manager_add(
     }
 
     Bill new_bill = *bill;
-
-    new_bill.id =
-        manager->next_id++;
 
     manager->bills[
         manager->count
