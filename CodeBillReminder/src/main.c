@@ -1,57 +1,22 @@
 #include <stdio.h>
-
-#include "database.h"
-
+#include "date.h"
 
 int main(void)
 {
-    Database database = { 0 };
+    Date date;
 
-    printf("Opening database...\n");
-
-    if (!database_open(
-        &database,
-        "database/bills.db"))
+    if (date_from_string("2026-09-20", &date))
     {
-        printf(
-            "Failed to open database.\n"
-        );
+        printf("Date parsed successfully.\n");
 
-        return 1;
+        printf("Year  : %d\n", date.year);
+        printf("Month : %d\n", date.month);
+        printf("Day   : %d\n", date.day);
     }
-
-    printf(
-        "Database opened successfully.\n"
-    );
-
-
-    printf(
-        "Initializing database...\n"
-    );
-
-    if (!database_initialize(
-        &database))
+    else
     {
-        printf(
-            "Failed to initialize database.\n"
-        );
-
-        database_close(&database);
-
-        return 1;
+        printf("Date parsing failed.\n");
     }
-
-
-    printf(
-        "Database initialized successfully.\n"
-    );
-
-
-    database_close(&database);
-
-    printf(
-        "Database closed.\n"
-    );
 
     return 0;
 }

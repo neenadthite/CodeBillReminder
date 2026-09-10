@@ -45,4 +45,6 @@ void date_to_string(
     int buffer_size
 );
 
+bool date_from_string(const char* string, Date* date);
+
 #endif

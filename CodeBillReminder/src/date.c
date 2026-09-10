@@ -245,3 +245,37 @@ void date_to_string(
         date.day
     );
 }
+
+bool date_from_string(const char* string, Date* date)
+{
+    if (string == NULL || date == NULL)
+    {
+        return false;
+    }
+
+    int year;
+    int month;
+    int day;
+
+    char extra;
+
+    if (sscanf(string, "%4d-%2d-%2d%c",
+        &year,
+        &month,
+        &day,
+        &extra) != 3)
+    {
+        return false;
+    }
+
+    Date parsed_date = date_create(year, month, day);
+
+    if (!date_is_valid(parsed_date))
+    {
+        return false;
+    }
+
+    *date = parsed_date;
+
+    return true;
+}
