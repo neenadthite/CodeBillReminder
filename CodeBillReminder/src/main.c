@@ -138,6 +138,17 @@ int main(void)
 
     bill_manager_print_all(&manager);
 
+    Bill* bill =
+        bill_manager_get(&manager, 1);
+
+    if (bill != NULL)
+    {
+        printf(
+            "\nFound Bill: %s\n",
+            bill->account_name
+        );
+    }
+
     bill_manager_free(
         &manager
     );
