@@ -1,111 +1,191 @@
 #include <stdio.h>
 
 #include "bill.h"
+#include "bill_manager.h"
 #include "reminder.h"
+
+
+static bool reminder_callback(
+    const Bill* bill,
+    void* context)
+{
+    (void)context;
+
+    printf("\nREMINDER REQUIRED\n");
+
+    printf("Account  : %s\n",
+        bill->account_name);
+
+    printf("Provider : %s\n",
+        bill->provider);
+
+    printf("Amount   : %lld.%02lld\n",
+        (long long)(bill->amount_paise / 100),
+        (long long)(bill->amount_paise % 100));
+
+    printf("Email    : %s\n",
+        bill->email_enabled
+        ? "Enabled"
+        : "Disabled");
+
+    printf("SMS      : %s\n",
+        bill->sms_enabled
+        ? "Enabled"
+        : "Disabled");
+
+    return true;
+}
+
+
+static void create_bill(
+    Bill* bill,
+    const char* account,
+    const char* provider,
+    int amount_paise,
+    Date due_date,
+    int reminder_days,
+    bool email,
+    bool sms)
+{
+    bill_init(bill);
+
+    bill_set_account_name(
+        bill,
+        account
+    );
+
+    bill_set_provider(
+        bill,
+        provider
+    );
+
+    bill_set_account_number(
+        bill,
+        "TEST123"
+    );
+
+    bill_set_amount_paise(
+        bill,
+        amount_paise
+    );
+
+    bill_set_due_date(
+        bill,
+        due_date
+    );
+
+    bill_set_reminder_days(
+        bill,
+        reminder_days
+    );
+
+    bill_set_email_enabled(
+        bill,
+        email
+    );
+
+    bill_set_sms_enabled(
+        bill,
+        sms
+    );
+
+    bill_set_status(
+        bill,
+        BILL_STATUS_PENDING
+    );
+}
 
 
 int main(void)
 {
-    Bill bill;
+    BillManager manager;
 
-    bill_init(&bill);
+    if (!bill_manager_init(&manager))
+    {
+        printf("BillManager initialization failed.\n");
+        return 1;
+    }
 
-    bill_set_account_name(
-        &bill,
-        "Netflix"
-    );
+    /*
+     * Bill 1
+     *
+     * Today = 2026-09-10
+     * Due = 2026-09-15
+     * Reminder = 5 days
+     *
+     * Reminder date = today
+     */
+    Bill bill1;
 
-    bill_set_provider(
-        &bill,
-        "Netflix India"
-    );
-
-    bill_set_account_number(
-        &bill,
-        "NET123456"
-    );
-
-    bill_set_amount_paise(
-        &bill,
-        99999
+    create_bill(
+        &bill1,
+        "Netflix",
+        "Netflix India",
+        79999,
+        date_create(2026, 9, 15),
+        5,
+        true,
+        true
     );
 
     /*
-     * Today:
-     * 2026-09-10
+     * Bill 2
      *
-     * Due:
-     * 2026-09-15
-     *
-     * Reminder:
-     * 5 days before due date
-     *
-     * Reminder date:
-     * 2026-09-10
+     * Reminder is in the future.
      */
-    bill_set_due_date(
-        &bill,
-        date_create(2026, 9, 15)
+    Bill bill2;
+
+    create_bill(
+        &bill2,
+        "Electricity",
+        "MSEDCL",
+        250000,
+        date_create(2026, 9, 20),
+        5,
+        true,
+        false
     );
 
-    bill_set_reminder_days(
-        &bill,
-        5
+    /*
+     * Bill 3
+     *
+     * Reminder date is today,
+     * but no notification channel.
+     */
+    Bill bill3;
+
+    create_bill(
+        &bill3,
+        "Internet",
+        "ISP",
+        99900,
+        date_create(2026, 9, 15),
+        5,
+        false,
+        false
     );
 
-    bill_set_email_enabled(
-        &bill,
-        true
-    );
+    bill_manager_add(&manager, &bill1);
+    bill_manager_add(&manager, &bill2);
+    bill_manager_add(&manager, &bill3);
 
-    bill_set_sms_enabled(
-        &bill,
-        true
-    );
+    printf("BillManager count: %zu\n",
+        bill_manager_count(&manager));
 
-    bill_set_status(
-        &bill,
-        BILL_STATUS_PENDING
-    );
+    printf("\nProcessing reminders...\n");
 
+    size_t reminder_count =
+        reminder_process_bills(
+            bill_manager_data(&manager),
+            bill_manager_count(&manager),
+            reminder_callback,
+            NULL
+        );
 
-    printf("Reminder date test\n");
-    printf("------------------\n");
+    printf("\nTotal reminders required: %zu\n",
+        reminder_count);
 
-    Date reminder_date =
-        bill_get_reminder_date(&bill);
-
-    char date_string[11];
-
-    date_to_string(
-        reminder_date,
-        date_string,
-        sizeof(date_string)
-    );
-
-    printf("Reminder date : %s\n",
-        date_string);
-
-    printf(
-        "Reminder due  : %s\n",
-        reminder_is_due(&bill)
-        ? "YES"
-        : "NO"
-    );
-
-    printf(
-        "Overdue       : %s\n",
-        reminder_is_overdue(&bill)
-        ? "YES"
-        : "NO"
-    );
-
-    printf(
-        "Notification   : %s\n",
-        reminder_has_notification_channel(&bill)
-        ? "YES"
-        : "NO"
-    );
+    bill_manager_free(&manager);
 
     return 0;
 }

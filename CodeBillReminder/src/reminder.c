@@ -46,3 +46,49 @@ bool reminder_has_notification_channel(
     return bill->email_enabled ||
            bill->sms_enabled;
 }
+
+size_t reminder_process_bills(
+    const Bill* bills,
+    size_t count,
+    ReminderCallback callback,
+    void* context)
+{
+    if (bills == NULL ||
+        count == 0 ||
+        callback == NULL)
+    {
+        return 0;
+    }
+
+    size_t reminder_count = 0;
+
+    for (size_t i = 0; i < count; i++)
+    {
+        const Bill* bill = &bills[i];
+
+        /*
+         * Ignore bills that don't need
+         * a reminder today.
+         */
+        if (!reminder_is_due(bill))
+        {
+            continue;
+        }
+
+        /*
+         * Ignore bills that have no
+         * notification channel enabled.
+         */
+        if (!reminder_has_notification_channel(bill))
+        {
+            continue;
+        }
+
+        if (callback(bill, context))
+        {
+            reminder_count++;
+        }
+    }
+
+    return reminder_count;
+}

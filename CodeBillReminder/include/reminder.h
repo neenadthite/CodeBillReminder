@@ -2,7 +2,7 @@
 #define REMINDER_H
 
 #include <stdbool.h>
-
+#include <stddef.h>
 #include "bill.h"
 
 /*
@@ -25,6 +25,18 @@ bool reminder_is_overdue(
  */
 bool reminder_has_notification_channel(
     const Bill *bill
+);
+
+typedef bool (*ReminderCallback)(
+    const Bill* bill,
+    void* context
+    );
+
+size_t reminder_process_bills(
+    const Bill* bills,
+    size_t count,
+    ReminderCallback callback,
+    void* context
 );
 
 #endif

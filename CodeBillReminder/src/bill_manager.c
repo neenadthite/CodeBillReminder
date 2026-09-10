@@ -372,3 +372,14 @@ bool bill_manager_remove_from_database(
 
     return true;
 }
+
+const Bill* bill_manager_data(
+    const BillManager* manager)
+{
+    if (manager == NULL)
+    {
+        return NULL;
+    }
+
+    return manager->bills;
+}
