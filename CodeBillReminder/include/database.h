@@ -43,7 +43,7 @@ bool database_initialize(
  */
 bool database_insert_bill(
     Database* database,
-    const Bill* bill
+    Bill* bill
 );
 
 
