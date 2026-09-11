@@ -31,14 +31,12 @@ static void print_menu(void)
     printf("================================\n");
     printf("1. Add Bill\n");
     printf("2. View Bills\n");
-    printf("3. Update Bill\n");
-    printf("4. Delete Bill\n");
-    printf("5. Process Reminders\n");
-    printf("6. Exit\n");
+    printf("3. Delete Bill\n");
+    printf("4. Check Reminders\n");
+    printf("5. Exit\n");
     printf("================================\n");
     printf("Select option: ");
 }
-
 
 int main(void)
 {
@@ -216,22 +214,51 @@ int main(void)
 
         case 3:
         {
-            printf("\nUpdate Bill - coming next.\n");
+            /*
+             * Delete Bill
+             */
+
+            int id;
+
+            printf("\nEnter Bill ID to delete: ");
+
+            if (scanf_s("%d", &id) != 1)
+            {
+                printf("Invalid Bill ID.\n");
+
+                while (getchar() != '\n')
+                {
+                    /* Clear input buffer */
+                }
+
+                break;
+            }
+
+            while (getchar() != '\n')
+            {
+                /* Clear newline */
+            }
+
+            if (bill_manager_remove_from_database(
+                &manager,
+                &database,
+                id))
+            {
+                printf("\nBill deleted successfully.\n");
+            }
+            else
+            {
+                printf("\nFailed to delete Bill ID %d.\n", id);
+            }
+
             break;
         }
 
 
         case 4:
         {
-            printf("\nDelete Bill - coming next.\n");
-            break;
-        }
-
-
-        case 5:
-        {
             /*
-             * Process reminders
+             * Check Reminders
              */
 
             if (!notification_manager_ready)
@@ -242,7 +269,7 @@ int main(void)
                 break;
             }
 
-            printf("\nProcessing reminders...\n");
+            printf("\nChecking reminders...\n");
 
             size_t count =
                 reminder_process_bills(
@@ -259,7 +286,7 @@ int main(void)
         }
 
 
-        case 6:
+        case 5:
         {
             running = false;
             break;
@@ -269,12 +296,14 @@ int main(void)
         default:
         {
             printf(
-                "\nInvalid option. Please select 1-6.\n");
+                "\nInvalid option. Please select 1-5.\n");
 
             break;
         }
+
+
         }
-    }
+}
 
 
     /*

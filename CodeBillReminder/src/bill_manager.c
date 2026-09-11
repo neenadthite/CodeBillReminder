@@ -175,31 +175,24 @@ size_t bill_manager_count(
 }
 
 
-void bill_manager_print_all(
-    const BillManager* manager)
+void bill_manager_print_all(const BillManager* manager)
 {
-    if (manager == NULL)
-    {
-        return;
-    }
-
-    if (manager->count == 0)
+    if (manager == NULL || manager->count == 0)
     {
         printf("\nNo bills available.\n");
         return;
     }
 
-    printf(
-        "\n========== All Bills ==========\n"
-    );
+    printf("\n========== BILL LIST ==========\n");
 
-    for (size_t i = 0;
-        i < manager->count;
-        i++)
+    for (size_t i = 0; i < manager->count; i++)
     {
-        bill_ui_print(
-            &manager->bills[i]
-        );
+        printf("\nBill ID        : %d\n",
+            manager->bills[i].id);
+
+        bill_ui_print(&manager->bills[i]);
+
+        printf("-------------------------------\n");
     }
 }
 

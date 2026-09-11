@@ -3,7 +3,6 @@
 
 #include "bill.h"
 
-
 /*
  * Read a complete Bill from the user.
  *
