@@ -45,6 +45,9 @@
     <ClCompile Include="src\notification_manager.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\email_config.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\bill.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\notification_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\email_config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

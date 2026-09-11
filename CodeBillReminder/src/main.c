@@ -9,6 +9,7 @@
 #include "bill.h"
 #include "date.h"
 #include "notification.h"
+#include "email_config.h"
 
 
 static bool reminder_callback(
@@ -267,17 +268,19 @@ int main(void)
     printf("BillManager count: %zu\n",
         bill_manager_count(&manager));
 
-    EmailConfig email_config =
+    EmailConfig email_config;
+
+    if (!email_config_load(
+        "config/email.conf",
+        &email_config))
     {
-        .smtp_host = "smtp.example.com",
-        .smtp_port = 587,
+        printf("Failed to load email configuration.\n");
 
-        .username = "your-email@example.com",
-        .password = "YOUR_APP_PASSWORD",
+        bill_manager_free(&manager);
+        database_close(&database);
 
-        .sender = "your-email@example.com",
-        .recipient = "recipient@example.com"
-    };
+        return 1;
+    }
 
     NotificationManager notification_manager;
 
