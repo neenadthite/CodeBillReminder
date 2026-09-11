@@ -18,6 +18,7 @@ void bill_init(Bill* bill)
     bill->sms_enabled = false;
     bill->amount_paise = 0;
     bill->status = BILL_STATUS_PENDING;
+    bill->reminder_sent = false;
 }
 
 

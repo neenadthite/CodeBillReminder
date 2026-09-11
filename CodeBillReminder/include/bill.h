@@ -40,6 +40,8 @@ typedef struct
 
     BillStatus status;
 
+    bool reminder_sent;
+
 } Bill;
 
 

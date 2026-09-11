@@ -57,6 +57,48 @@ void database_close(
     database->handle = NULL;
 }
 
+static bool database_has_reminder_sent_column(sqlite3* db)
+{
+    const char* sql =
+        "PRAGMA table_info(bills);";
+
+    sqlite3_stmt* statement = NULL;
+
+    int result = sqlite3_prepare_v2(
+        db,
+        sql,
+        -1,
+        &statement,
+        NULL
+    );
+
+    if (result != SQLITE_OK)
+    {
+        return false;
+    }
+
+    bool found = false;
+
+    while (sqlite3_step(statement) == SQLITE_ROW)
+    {
+        const unsigned char* column_name =
+            sqlite3_column_text(statement, 1);
+
+        if (column_name != NULL &&
+            strcmp(
+                (const char*)column_name,
+                "reminder_sent") == 0)
+        {
+            found = true;
+            break;
+        }
+    }
+
+    sqlite3_finalize(statement);
+
+    return found;
+}   
+
 bool database_initialize(
     Database* database)
 {
@@ -80,7 +122,8 @@ bool database_initialize(
         "reminder_days INTEGER NOT NULL,"
         "email_enabled INTEGER NOT NULL,"
         "sms_enabled INTEGER NOT NULL,"
-        "status INTEGER NOT NULL"
+        "status INTEGER NOT NULL,"
+        "reminder_sent INTEGER NOT NULL DEFAULT 0"
         ");";
 
     char* error_message = NULL;
@@ -104,6 +147,40 @@ bool database_initialize(
         sqlite3_free(error_message);
 
         return false;
+    }
+
+    if (!database_has_reminder_sent_column(db))
+    {
+        const char* migration_sql =
+            "ALTER TABLE bills "
+            "ADD COLUMN reminder_sent "
+            "INTEGER NOT NULL DEFAULT 0;";
+
+        char* migration_error = NULL;
+
+        result = sqlite3_exec(
+            db,
+            migration_sql,
+            NULL,
+            NULL,
+            &migration_error
+        );
+
+        if (result != SQLITE_OK)
+        {
+            fprintf(
+                stderr,
+                "Database migration error: %s\n",
+                migration_error
+            );
+
+            sqlite3_free(migration_error);
+
+            return false;
+        }
+
+        printf(
+            "Database migrated: reminder_sent column added.\n");
     }
 
     return true;

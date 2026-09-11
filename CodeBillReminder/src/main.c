@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "database.h"
 #include "bill_manager.h"
@@ -38,8 +39,22 @@ static void print_menu(void)
     printf("Select option: ");
 }
 
-int main(void)
-{
+int main(int argc, char* argv[]) {
+
+    bool check_reminders_mode = false;
+
+    if (argc > 1)
+    {
+        if (strcmp(argv[1], "--check-reminders") == 0)
+        {
+            check_reminders_mode = true;
+        }
+        else
+        {
+            printf("Unknown argument: %s\n", argv[1]);
+            return 1;
+        }
+    }
     Database database;
     BillManager manager;
 
@@ -126,6 +141,35 @@ int main(void)
         notification_manager_init(
             &notification_manager,
             &email_config);
+
+    if (check_reminders_mode)
+    {
+        if (!notification_manager_ready)
+        {
+            printf("Notification Manager is not ready.\n");
+
+            bill_manager_free(&manager);
+            database_close(&database);
+
+            return 1;
+        }
+
+        printf("Checking reminders...\n");
+
+        size_t count =
+            reminder_process_bills(
+                bill_manager_data(&manager),
+                bill_manager_count(&manager),
+                reminder_notification_callback,
+                &notification_manager);
+
+        printf("Notifications sent: %zu\n", count);
+
+        bill_manager_free(&manager);
+        database_close(&database);
+
+        return 0;
+    }
 
 
     /*
