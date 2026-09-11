@@ -2,20 +2,18 @@
 
 bool notification_manager_init(
     NotificationManager* manager,
-    const char* email_recipient)
+    const EmailConfig* email_config)
 {
     if (manager == NULL ||
-        email_recipient == NULL ||
-        email_recipient[0] == '\0')
+        email_config == NULL)
     {
         return false;
     }
 
-    manager->email.recipient = email_recipient;
+    manager->email = *email_config;
 
     return true;
 }
-
 
 bool notification_manager_send(
     NotificationManager* manager,

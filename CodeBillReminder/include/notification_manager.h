@@ -9,16 +9,17 @@
 typedef struct
 {
     EmailConfig email;
+
 } NotificationManager;
 
 bool notification_manager_init(
-    NotificationManager *manager,
-    const char *email_recipient
+    NotificationManager* manager,
+    const EmailConfig* email_config
 );
 
 bool notification_manager_send(
-    NotificationManager *manager,
-    const Bill *bill
+    NotificationManager* manager,
+    const Bill* bill
 );
 
 #endif

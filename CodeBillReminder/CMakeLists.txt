@@ -9,6 +9,8 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+find_package(CURL CONFIG REQUIRED)
+
 add_executable(bill_reminder
     src/main.c
     src/date.c
@@ -26,4 +28,9 @@ target_include_directories(bill_reminder
     PRIVATE
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/external/sqlite
+)
+
+target_link_libraries(bill_reminder
+    PRIVATE
+        CURL::libcurl
 )

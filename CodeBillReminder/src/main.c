@@ -266,11 +266,23 @@ int main(void)
     printf("BillManager count: %zu\n",
         bill_manager_count(&manager));
 
+    EmailConfig email_config =
+    {
+        .smtp_host = "smtp.example.com",
+        .smtp_port = 587,
+
+        .username = "your-email@example.com",
+        .password = "YOUR_APP_PASSWORD",
+
+        .sender = "your-email@example.com",
+        .recipient = "recipient@example.com"
+    };
+
     NotificationManager notification_manager;
 
     if (!notification_manager_init(
         &notification_manager,
-        "neenadthite@gmail.com"))
+        &email_config))
     {
         printf("Failed to initialize Notification Manager.\n");
 
@@ -280,6 +292,7 @@ int main(void)
         return 1;
     }
 
+    
     /*
      * ------------------------------------------------
      * Process reminders
