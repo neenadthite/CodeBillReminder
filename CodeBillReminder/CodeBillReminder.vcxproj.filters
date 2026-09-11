@@ -81,4 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="config\email.conf">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
