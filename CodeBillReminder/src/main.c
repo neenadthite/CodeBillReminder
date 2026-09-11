@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <curl/curl.h>
 
 #include "notification_manager.h"
 #include "database.h"
@@ -86,7 +87,7 @@ int main(void)
 {
     Database database;
     BillManager manager;
-
+    printf("libcurl version: %s\n", curl_version());
     printf("Opening database...\n");
 
     if (!database_open(
