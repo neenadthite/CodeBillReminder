@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "notification_manager.h"
 #include "database.h"
 #include "bill_manager.h"
 #include "reminder.h"
@@ -109,6 +110,16 @@ int main(void)
      * Create test bills
      * ------------------------------------------------
      */
+    Date today = date_today();
+
+    Date netflix_due_date =
+        date_add_days(today, 5);
+
+    Date electricity_due_date =
+        date_add_days(today, 10);
+
+    Date internet_due_date =
+        date_add_days(today, 5);
 
     Bill netflix;
     Bill electricity;
@@ -125,7 +136,7 @@ int main(void)
         "Netflix India",
         "NET123456",
         79999,
-        date_create(2026, 9, 15),
+        netflix_due_date,
         5,
         true,
         true);
@@ -136,7 +147,7 @@ int main(void)
         "MSEDCL",
         "ELEC123456",
         245000,
-        date_create(2026, 9, 20),
+        electricity_due_date,
         5,
         true,
         false);
@@ -147,7 +158,7 @@ int main(void)
         "JioFiber",
         "JIO123456",
         99900,
-        date_create(2026, 9, 15),
+        internet_due_date,
         5,
         false,
         false);
@@ -255,6 +266,19 @@ int main(void)
     printf("BillManager count: %zu\n",
         bill_manager_count(&manager));
 
+    NotificationManager notification_manager;
+
+    if (!notification_manager_init(
+        &notification_manager,
+        "neenadthite@gmail.com"))
+    {
+        printf("Failed to initialize Notification Manager.\n");
+
+        bill_manager_free(&manager);
+        database_close(&database);
+
+        return 1;
+    }
 
     /*
      * ------------------------------------------------
@@ -264,23 +288,17 @@ int main(void)
 
     printf("\nProcessing reminders...\n");
 
-    EmailConfig email_config =
-    {
-        .recipient = "neenadthite@gmail.com"
-    };
-
-    size_t email_count =
+    size_t notification_count =
         reminder_process_bills(
             bill_manager_data(&manager),
             bill_manager_count(&manager),
             reminder_notification_callback,
-            &email_config);
+            &notification_manager);
 
-    printf("\nEmails sent: %zu\n",
-        email_count);
+    printf("\nNotifications sent: %zu\n",
+        notification_count);
 
-
-    /*
+     /*
      * ------------------------------------------------
      * Cleanup
      * ------------------------------------------------
@@ -299,15 +317,26 @@ static bool reminder_notification_callback(
     const Bill* bill,
     void* context)
 {
-    EmailConfig* email_config =
-        (EmailConfig*)context;
+    NotificationManager* manager =
+        (NotificationManager*)context;
 
-    if (!bill->email_enabled)
+    return notification_manager_send(
+        manager,
+        bill);
+}
+
+static bool clear_test_bills(Database* database)
+{
+    const int test_ids[] = { 1, 2, 3, 4, 5, 6 };
+
+    for (size_t i = 0;
+        i < sizeof(test_ids) / sizeof(test_ids[0]);
+        i++)
     {
-        return false;
+        database_delete_bill(
+            database,
+            test_ids[i]);
     }
 
-    return notification_send_email(
-        bill,
-        email_config);
+    return true;
 }
