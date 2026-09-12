@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "notification_manager.h"
 
 bool notification_manager_init(

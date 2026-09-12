@@ -225,7 +225,7 @@ int main(int argc, char* argv[]) {
 
         int option;
 
-        if (scanf_s(
+        if (scanf(
             "%d",
             &option) != 1)
         {
@@ -305,7 +305,7 @@ int main(int argc, char* argv[]) {
 
             printf("\nEnter Bill ID to delete: ");
 
-            if (scanf_s("%d", &id) != 1)
+            if (scanf("%d", &id) != 1)
             {
                 printf("Invalid Bill ID.\n");
 

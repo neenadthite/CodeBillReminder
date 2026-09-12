@@ -97,7 +97,7 @@ bool bill_manager_remove_from_database(
     int id
 );
 
-const Bill* bill_manager_data(
+Bill* bill_manager_data(
     const BillManager* manager
 );
 
