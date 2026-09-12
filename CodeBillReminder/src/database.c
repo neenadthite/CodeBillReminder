@@ -1095,4 +1095,6 @@ bool database_mark_reminder_sent(
 
         return false;
     }
+    
+    return true;
 }
