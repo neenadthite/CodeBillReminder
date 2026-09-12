@@ -1083,6 +1083,7 @@ bool database_mark_reminder_sent(
         bill_id,
         result,
         sqlite3_changes(db));
+   
     return true;
 
     if (result != SQLITE_DONE)
@@ -1096,5 +1097,4 @@ bool database_mark_reminder_sent(
         return false;
     }
     
-    return true;
 }
