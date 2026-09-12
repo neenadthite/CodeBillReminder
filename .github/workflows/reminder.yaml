@@ -88,3 +88,16 @@ jobs:
             git commit -m "Update reminder state"
             git push origin C_Code
           fi
+
+      - name: Inspect database
+        working-directory: CodeBillReminder
+        run: |
+          echo "Database files:"
+          ls -lah database/
+
+          echo "Git status:"
+          cd ..
+          git status --short
+
+          echo "Database checksum:"
+          sha256sum CodeBillReminder/database/bills.db

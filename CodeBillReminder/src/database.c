@@ -1077,4 +1077,23 @@ bool database_mark_reminder_sent(
     sqlite3_finalize(statement);
 
     return true;
+
+    result = sqlite3_step(statement);
+
+    printf(
+        "database_mark_reminder_sent: Bill ID=%d, result=%d, changes=%d\n",
+        bill_id,
+        result,
+        sqlite3_changes(db));
+
+    if (result != SQLITE_DONE)
+    {
+        printf(
+            "Failed to mark reminder as sent: %s\n",
+            sqlite3_errmsg(db));
+
+        sqlite3_finalize(statement);
+
+        return false;
+    }
 }
