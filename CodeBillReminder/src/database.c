@@ -1058,10 +1058,6 @@ bool database_mark_reminder_sent(
         1,
         bill_id);
 
-    printf(
-        "Marking reminder sent for Bill ID %d\n",
-        bill_id);
-
     result = sqlite3_step(statement);
 
     if (result != SQLITE_DONE)
@@ -1074,10 +1070,6 @@ bool database_mark_reminder_sent(
 
         return false;
     }
-
-    printf(
-        "Reminder database update completed for Bill ID %d\n",
-        bill_id);
 
     sqlite3_finalize(statement);
 
