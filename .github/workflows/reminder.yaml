@@ -22,6 +22,7 @@ jobs:
           sudo apt-get install -y gcc libcurl4-openssl-dev
 
       - name: Build application
+        working-directory: CodeBillReminder
         run: |
           gcc -std=c17 -Wall -Wextra \
             -Iinclude \
@@ -41,5 +42,6 @@ jobs:
             -o CodeBillReminder
 
       - name: Run reminder check
+        working-directory: CodeBillReminder
         run: |
           ./CodeBillReminder --check-reminders
