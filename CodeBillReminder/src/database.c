@@ -207,8 +207,9 @@ bool database_insert_bill(Database* database, Bill* bill)
         "reminder_days, "
         "email_enabled, "
         "sms_enabled, "
-        "status"
-        ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        "status, "
+        "reminder_sent"
+        ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     sqlite3_stmt* statement = NULL;
 
@@ -296,6 +297,12 @@ bool database_insert_bill(Database* database, Bill* bill)
         statement,
         9,
         (int)bill->status
+    );
+
+    sqlite3_bind_int(
+        statement,
+        10,
+        bill->reminder_sent ? 1 : 0
     );
 
     result = sqlite3_step(statement);
