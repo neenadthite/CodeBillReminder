@@ -834,6 +834,7 @@ bool database_get_all_bills(
         "email_enabled, "
         "sms_enabled, "
         "status "
+        "reminder_sent "
         "FROM bills "
         "ORDER BY id;";
 
@@ -890,6 +891,9 @@ bool database_get_all_bills(
 
         int status =
             sqlite3_column_int(statement, 9);
+
+        int reminder_sent =
+    sqlite3_column_int(statement, 10);
 
         if (account_name == NULL ||
             provider == NULL ||
@@ -979,6 +983,8 @@ bool database_get_all_bills(
             (BillStatus)status
         );
 
+        bill.reminder_sent = (reminder_sent != 0);
+
         /*
          * Give the reconstructed Bill
          * to the caller.
@@ -996,6 +1002,68 @@ bool database_get_all_bills(
     if (result != SQLITE_DONE)
     {
         printf("Failed while reading bills: %s\n",
+            sqlite3_errmsg(db));
+
+        sqlite3_finalize(statement);
+
+        return false;
+    }
+
+    sqlite3_finalize(statement);
+
+    return true;
+}
+
+bool database_mark_reminder_sent(
+    Database* database,
+    int bill_id)
+{
+    if (database == NULL ||
+        database->handle == NULL ||
+        bill_id <= 0)
+    {
+        return false;
+    }
+
+    sqlite3* db =
+        (sqlite3*)database->handle;
+
+    const char* sql =
+        "UPDATE bills "
+        "SET reminder_sent = 1 "
+        "WHERE id = ?;";
+
+    sqlite3_stmt* statement = NULL;
+
+    int result = sqlite3_prepare_v2(
+        db,
+        sql,
+        -1,
+        &statement,
+        NULL
+    );
+
+    if (result != SQLITE_OK)
+    {
+        printf(
+            "Failed to prepare reminder update: %s\n",
+            sqlite3_errmsg(db));
+
+        return false;
+    }
+
+    sqlite3_bind_int(
+        statement,
+        1,
+        bill_id
+    );
+
+    result = sqlite3_step(statement);
+
+    if (result != SQLITE_DONE)
+    {
+        printf(
+            "Failed to mark reminder as sent: %s\n",
             sqlite3_errmsg(db));
 
         sqlite3_finalize(statement);

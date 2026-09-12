@@ -84,4 +84,9 @@ bool database_get_all_bills(
     void* context
 );
 
+bool database_mark_reminder_sent(
+    Database* database,
+    int bill_id
+);
+
 #endif

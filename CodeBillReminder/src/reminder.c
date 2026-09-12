@@ -3,23 +3,19 @@
 #include "date.h"
 
 
-bool reminder_is_due(
-    const Bill *bill)
+bool reminder_is_due(const Bill* bill)
 {
     if (bill == NULL)
-    {
         return false;
-    }
 
     Date today = date_today();
+    Date reminder_date = bill_get_reminder_date(bill);
 
-    Date reminder_date =
-        bill_get_reminder_date(bill);
-
-    return date_equal(
-        today,
-        reminder_date
-    );
+    /*
+     * Reminder becomes eligible on the reminder date
+     * and remains eligible afterwards until sent.
+     */
+    return !date_less(today, reminder_date);
 }
 
 
@@ -48,7 +44,7 @@ bool reminder_has_notification_channel(
 }
 
 size_t reminder_process_bills(
-    const Bill* bills,
+    Bill* bills,
     size_t count,
     ReminderCallback callback,
     void* context)
@@ -66,23 +62,14 @@ size_t reminder_process_bills(
     {
         const Bill* bill = &bills[i];
 
-        /*
-         * Ignore bills that don't need
-         * a reminder today.
-         */
         if (!reminder_is_due(bill))
-        {
             continue;
-        }
 
-        /*
-         * Ignore bills that have no
-         * notification channel enabled.
-         */
-        if (!reminder_has_notification_channel(bill))
-        {
+        if (bill->reminder_sent)
             continue;
-        }
+
+        if (!reminder_has_notification_channel(bill))
+            continue;
 
         if (callback(bill, context))
         {

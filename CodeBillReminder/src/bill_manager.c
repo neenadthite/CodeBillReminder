@@ -193,7 +193,12 @@ void bill_manager_print_all(const BillManager* manager)
         bill_ui_print(&manager->bills[i]);
 
         printf("-------------------------------\n");
+        printf("Reminder Sent  : %s\n",
+            manager->bills[i].reminder_sent
+            ? "Yes"
+            : "No");
     }
+
 }
 
 bool bill_manager_add_to_database(

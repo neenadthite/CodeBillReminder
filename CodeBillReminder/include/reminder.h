@@ -33,7 +33,7 @@ typedef bool (*ReminderCallback)(
     );
 
 size_t reminder_process_bills(
-    const Bill* bills,
+    Bill* bills,
     size_t count,
     ReminderCallback callback,
     void* context

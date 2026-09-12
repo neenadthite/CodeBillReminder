@@ -10,18 +10,49 @@
 #include "notification_manager.h"
 #include "email_config.h"
 
+typedef struct
+{
+    NotificationManager* notification_manager;
+    Database* database;
+
+} ReminderContext;
 
 static bool reminder_notification_callback(
     const Bill* bill,
     void* context)
 {
-    NotificationManager* manager =
-        (NotificationManager*)context;
+    ReminderContext* reminder_context =
+        (ReminderContext*)context;
 
-    return notification_manager_send(
-        manager,
-        bill);
+    if (reminder_context == NULL ||
+        reminder_context->notification_manager == NULL ||
+        reminder_context->database == NULL)
+    {
+        return false;
+    }
+
+    if (!notification_manager_send(
+        reminder_context->notification_manager,
+        bill))
+    {
+        return false;
+    }
+
+    if (!database_mark_reminder_sent(
+        reminder_context->database,
+        bill->id))
+    {
+        printf(
+            "Warning: Email sent but reminder state "
+            "could not be saved for Bill ID %d.\n",
+            bill->id);
+
+        return false;
+    }
+
+    return true;
 }
+
 
 
 static void print_menu(void)
@@ -156,12 +187,20 @@ int main(int argc, char* argv[]) {
 
         printf("Checking reminders...\n");
 
+        ReminderContext reminder_context;
+
+        reminder_context.notification_manager =
+            &notification_manager;
+
+        reminder_context.database =
+            &database;
+
         size_t count =
             reminder_process_bills(
                 bill_manager_data(&manager),
                 bill_manager_count(&manager),
                 reminder_notification_callback,
-                &notification_manager);
+                &reminder_context);
 
         printf("Notifications sent: %zu\n", count);
 
