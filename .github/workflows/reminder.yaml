@@ -40,6 +40,26 @@ jobs:
             external/sqlite/sqlite3.c \
             -lcurl \
             -o CodeBillReminder
+       
+      - name: Create email configuration
+        working-directory: CodeBillReminder
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: |
+          mkdir -p config
+          cat > config/email.conf <<EOF
+          SMTP_HOST=$SMTP_HOST
+          SMTP_PORT=$SMTP_PORT
+          SMTP_USERNAME=$SMTP_USERNAME
+          SMTP_PASSWORD=$SMTP_PASSWORD
+          EMAIL_FROM=$EMAIL_FROM
+          EMAIL_TO=$EMAIL_TO
+          EOF
 
       - name: Run reminder check
         working-directory: CodeBillReminder

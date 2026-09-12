@@ -176,6 +176,7 @@
     <ClInclude Include="include\reminder.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.github\workflows\reminder.yaml" />
     <None Include="config\email.conf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

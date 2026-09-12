@@ -85,5 +85,8 @@
     <None Include="config\email.conf">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\.github\workflows\reminder.yaml">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
