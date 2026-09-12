@@ -592,8 +592,6 @@ Add your preferred open-source license here.
 For example:
 
 ```text
-MIT License
+Copyright © Ninad Thite
 ```
-
-if you decide to release the project under the MIT License.
 
