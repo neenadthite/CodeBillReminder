@@ -592,6 +592,6 @@ Add your preferred open-source license here.
 For example:
 
 ```text
-Copyright © Ninad Thite
+Copyright © Neenad Thite
 ```
 
