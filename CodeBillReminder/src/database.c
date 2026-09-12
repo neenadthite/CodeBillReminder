@@ -1076,8 +1076,6 @@ bool database_mark_reminder_sent(
         bill_id);
     sqlite3_finalize(statement);
 
-    return true;
-
     result = sqlite3_step(statement);
 
     printf(
@@ -1096,4 +1094,6 @@ bool database_mark_reminder_sent(
 
         return false;
     }
+    
+    return true;
 }
