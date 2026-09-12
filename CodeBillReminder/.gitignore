@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Build output
+CodeBillReminder/CodeBillReminder
+
+# Runtime configuration
+CodeBillReminder/config/email.conf
