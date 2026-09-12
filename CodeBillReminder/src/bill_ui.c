@@ -312,7 +312,8 @@ void bill_ui_print(const Bill* bill)
         sizeof(due_date_string)
     );
 
-    Date reminder_date = bill_get_reminder_date(bill);
+    Date reminder_date =
+        bill_get_reminder_date(bill);
 
     date_to_string(
         reminder_date,
@@ -320,25 +321,55 @@ void bill_ui_print(const Bill* bill)
         sizeof(reminder_date_string)
     );
 
+    const char* status_string;
+
+    switch (bill->status)
+    {
+    case BILL_STATUS_PAID:
+        status_string = "PAID";
+        break;
+
+    case BILL_STATUS_OVERDUE:
+        status_string = "OVERDUE";
+        break;
+
+    case BILL_STATUS_PENDING:
+    default:
+        status_string = "PENDING";
+        break;
+    }
+
     printf("\n========== Bill ==========\n");
 
-    printf("Account        : %s\n", bill->account_name);
-    printf("Provider       : %s\n", bill->provider);
-    printf("Account Number : %s\n", bill->account_number);
+    printf("Account        : %s\n",
+        bill->account_name);
+
+    printf("Provider       : %s\n",
+        bill->provider);
+
+    printf("Account Number : %s\n",
+        bill->account_number);
 
     printf("Amount         : %lld.%02lld\n",
         (long long)(bill->amount_paise / 100),
         (long long)(bill->amount_paise % 100));
 
-    printf("Due Date       : %s\n", due_date_string);
-    printf("Reminder Date  : %s\n", reminder_date_string);
-    printf("Reminder Days  : %d\n", bill->reminder_days);
+    printf("Due Date       : %s\n",
+        due_date_string);
+
+    printf("Reminder Date  : %s\n",
+        reminder_date_string);
+
+    printf("Reminder Days  : %d\n",
+        bill->reminder_days);
 
     printf("Email          : %s\n",
-        bill->email_enabled ? "Enabled" : "Disabled");
+        bill->email_enabled
+        ? "Enabled"
+        : "Disabled");
 
-    printf("SMS            : %s\n",
-        bill->sms_enabled ? "Enabled" : "Disabled");
+    printf("Status         : %s\n",
+        status_string);
 
     printf("==========================\n");
 }

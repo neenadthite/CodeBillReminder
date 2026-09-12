@@ -193,10 +193,6 @@ void bill_manager_print_all(const BillManager* manager)
         bill_ui_print(&manager->bills[i]);
 
         printf("-------------------------------\n");
-        printf("Reminder Sent  : %s\n",
-            manager->bills[i].reminder_sent
-            ? "Yes"
-            : "No");
     }
 
 }
@@ -380,4 +376,34 @@ Bill* bill_manager_data(
     }
 
     return manager->bills;
+}
+
+bool bill_manager_mark_paid(
+    BillManager* manager,
+    Database* database,
+    int id)
+{
+    if (manager == NULL ||
+        database == NULL ||
+        id <= 0)
+    {
+        return false;
+    }
+
+    Bill* bill =
+        bill_manager_get(manager, id);
+
+    if (bill == NULL)
+    {
+        return false;
+    }
+
+    bill->status = BILL_STATUS_PAID;
+
+    if (!database_update_bill(database, bill))
+    {
+        return false;
+    }
+
+    return true;
 }

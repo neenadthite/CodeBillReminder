@@ -101,4 +101,9 @@ Bill* bill_manager_data(
     const BillManager* manager
 );
 
+bool bill_manager_mark_paid(
+    BillManager* manager,
+    Database* database,
+    int id);
+
 #endif

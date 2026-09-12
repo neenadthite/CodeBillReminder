@@ -60,12 +60,13 @@ size_t reminder_process_bills(
 
     for (size_t i = 0; i < count; i++)
     {
-        const Bill* bill = &bills[i];
+        Bill* bill = &bills[i];
 
-        if (!reminder_is_due(bill))
+        /* Do not remind for bills already paid. */
+        if (bill->status == BILL_STATUS_PAID)
             continue;
 
-        if (bill->reminder_sent)
+        if (!reminder_is_due(bill))
             continue;
 
         if (!reminder_has_notification_channel(bill))

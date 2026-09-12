@@ -25,34 +25,15 @@ static bool reminder_notification_callback(
         (ReminderContext*)context;
 
     if (reminder_context == NULL ||
-        reminder_context->notification_manager == NULL ||
-        reminder_context->database == NULL)
+        reminder_context->notification_manager == NULL)
     {
         return false;
     }
 
-    if (!notification_manager_send(
+    return notification_manager_send(
         reminder_context->notification_manager,
-        bill))
-    {
-        return false;
-    }
-
-    if (!database_mark_reminder_sent(
-        reminder_context->database,
-        bill->id))
-    {
-        printf(
-            "Warning: Email sent but reminder state "
-            "could not be saved for Bill ID %d.\n",
-            bill->id);
-
-        return false;
-    }
-
-    return true;
+        bill);
 }
-
 
 static void print_menu(void)
 {
@@ -62,9 +43,10 @@ static void print_menu(void)
     printf("================================\n");
     printf("1. Add Bill\n");
     printf("2. View Bills\n");
-    printf("3. Delete Bill\n");
-    printf("4. Check Reminders\n");
-    printf("5. Exit\n");
+    printf("3. Mark Bill as paid\n");
+    printf("4. Delete Bill\n");
+    printf("5. Check Reminders\n");
+    printf("6. Exit\n");
     printf("================================\n");
     printf("Select option: ");
 }
@@ -293,8 +275,38 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-
         case 3:
+        {
+            int id;
+
+            printf("Enter Bill ID to mark as paid: ");
+
+            if (scanf("%d", &id) != 1)
+            {
+                printf("Invalid Bill ID.\n");
+                break;
+            }
+
+            if (bill_manager_mark_paid(
+                &manager,
+                &database,
+                id))
+            {
+                printf(
+                    "Bill ID %d marked as PAID.\n",
+                    id);
+            }
+            else
+            {
+                printf(
+                    "Failed to mark Bill ID %d as PAID.\n",
+                    id);
+            }
+
+            break;
+        }
+
+        case 4:
         {
             /*
              * Delete Bill
@@ -337,7 +349,7 @@ int main(int argc, char* argv[]) {
         }
 
 
-        case 4:
+        case 5:
         {
             /*
              * Check Reminders
@@ -368,7 +380,7 @@ int main(int argc, char* argv[]) {
         }
 
 
-        case 5:
+        case 6:
         {
             running = false;
             break;
