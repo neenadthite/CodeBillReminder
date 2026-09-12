@@ -18,9 +18,9 @@ static void trim_newline(char *string)
 
 
 static bool parse_value(
-    const char *line,
-    const char *key,
-    char *output,
+    const char* line,
+    const char* key,
+    char* output,
     size_t output_size)
 {
     size_t key_length = strlen(key);
@@ -35,21 +35,24 @@ static bool parse_value(
         return false;
     }
 
-    const char *value = line + key_length + 1;
+    const char* value =
+        line + key_length + 1;
 
-    if (strlen(value) >= output_size)
+    size_t value_length =
+        strlen(value);
+
+    if (value_length >= output_size)
     {
         return false;
     }
 
-    strcpy_s(
+    memcpy(
         output,
-        output_size,
-        value);
+        value,
+        value_length + 1);
 
     return true;
 }
-
 
 bool email_config_load(
     const char *filename,
