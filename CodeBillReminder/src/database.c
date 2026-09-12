@@ -1056,8 +1056,11 @@ bool database_mark_reminder_sent(
     sqlite3_bind_int(
         statement,
         1,
-        bill_id
-    );
+        bill_id);
+
+    printf(
+        "Marking reminder sent for Bill ID %d\n",
+        bill_id);
 
     result = sqlite3_step(statement);
 
@@ -1071,30 +1074,13 @@ bool database_mark_reminder_sent(
 
         return false;
     }
+
     printf(
-        "Reminder state updated for Bill ID %d.\n",
+        "Reminder database update completed for Bill ID %d\n",
         bill_id);
+
     sqlite3_finalize(statement);
 
-    result = sqlite3_step(statement);
-
-    printf(
-        "database_mark_reminder_sent: Bill ID=%d, result=%d, changes=%d\n",
-        bill_id,
-        result,
-        sqlite3_changes(db));
-   
     return true;
-
-    if (result != SQLITE_DONE)
-    {
-        printf(
-            "Failed to mark reminder as sent: %s\n",
-            sqlite3_errmsg(db));
-
-        sqlite3_finalize(statement);
-
-        return false;
-    }
     
 }
