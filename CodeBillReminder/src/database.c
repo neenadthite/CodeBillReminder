@@ -1071,7 +1071,9 @@ bool database_mark_reminder_sent(
 
         return false;
     }
-
+    printf(
+        "Reminder state updated for Bill ID %d.\n",
+        bill_id);
     sqlite3_finalize(statement);
 
     return true;

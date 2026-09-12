@@ -54,7 +54,6 @@ static bool reminder_notification_callback(
 }
 
 
-
 static void print_menu(void)
 {
     printf("\n");
